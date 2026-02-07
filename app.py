@@ -122,76 +122,125 @@ def custom_progress_bar(score):
     )
 
 
-
 # ---------------- STREAMLIT UI ----------------
-# ---------------- STREAMLIT UI ----------------
-st.set_page_config(page_title="PlagiCheck", layout="centered")
+# ================= STREAMLIT UI =================
+st.set_page_config(
+    page_title="PlagiCheck",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Header
+# ================= SIDEBAR =================
+st.sidebar.title("⚙️ PlagiCheck Settings")
+st.sidebar.caption("Control similarity detection")
+
+similarity_threshold = st.sidebar.slider(
+    "Plagiarism Threshold (%)",
+    min_value=30,
+    max_value=90,
+    value=60,
+    step=5
+)
+
+show_full_text = st.sidebar.checkbox("Show Full Documents", False)
+
+st.sidebar.info(
+    "Upload two documents to analyze similarity and detect plagiarism."
+)
+
+# ================= HEADER =================
 st.title("📄 PlagiCheck")
 st.caption("Real-Time Document Similarity Detection System")
 st.divider()
 
-# Upload Section
+# ================= UPLOAD SECTION =================
 st.subheader("📂 Upload Documents")
 
-col_up1, col_up2 = st.columns(2)
-with col_up1:
+up_col1, up_col2 = st.columns(2)
+with up_col1:
     file1 = st.file_uploader("First Document", type=["txt", "pdf", "docx"])
-with col_up2:
+with up_col2:
     file2 = st.file_uploader("Second Document", type=["txt", "pdf", "docx"])
 
-# Process only when both files are uploaded
+# ================= PROCESS =================
 if file1 and file2:
-    text1 = read_file(file1)
-    text2 = read_file(file2)
+    with st.spinner("🔍 Analyzing documents..."):
+        text1 = read_file(file1)
+        text2 = read_file(file2)
 
-    clean_text1 = preprocess_text(text1)
-    clean_text2 = preprocess_text(text2)
+        clean_text1 = preprocess_text(text1)
+        clean_text2 = preprocess_text(text2)
 
-    similarity_percentage = calculate_similarity(clean_text1, clean_text2)
+        similarity_percentage = calculate_similarity(
+            clean_text1, clean_text2
+        )
 
-    # Similarity Analysis Section
+    # ================= METRICS =================
     st.divider()
-    st.subheader("📊 Similarity Analysis")
+    st.subheader("📊 Similarity Overview")
 
-    # Big metric display
-    st.metric(
-        label="Similarity Score",
-        value=f"{similarity_percentage:.2f}%"
-    )
+    m1, m2, m3 = st.columns(3)
+    with m1:
+        st.metric("Similarity Score", f"{similarity_percentage:.2f}%")
+    with m2:
+        st.metric("Threshold", f"{similarity_threshold}%")
+    with m3:
+        verdict = (
+            "High" if similarity_percentage >= similarity_threshold
+            else "Moderate" if similarity_percentage >= similarity_threshold - 20
+            else "Low"
+        )
+        st.metric("Plagiarism Risk", verdict)
 
-    # Progress bar
-    st.subheader("Similarity Progress")
-    custom_progress_bar(similarity_percentage)
+    st.progress(int(similarity_percentage))
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Status message
-    if similarity_percentage > 70:
-        st.error("⚠️ High similarity detected! Possible plagiarism.")
-    elif similarity_percentage > 40:
+    # ================= STATUS =================
+    if similarity_percentage >= similarity_threshold:
+        st.error("🚨 High similarity detected! Possible plagiarism.")
+    elif similarity_percentage >= similarity_threshold - 20:
         st.warning("⚠️ Moderate similarity detected.")
     else:
         st.success("✅ Low similarity. Documents appear original.")
 
-    # Highlighted Similar Content
+    # ================= TABS =================
     st.divider()
-    st.subheader("📝 Highlighted Similar Content")
+    tab1, tab2, tab3 = st.tabs(
+        ["📝 Highlighted Similar Text", "📄 Document Preview", "ℹ️ Analysis Info"]
+    )
 
-    highlighted_doc1, highlighted_doc2 = highlight_similar_text(text1, text2)
+    # ---------- TAB 1: HIGHLIGHTED TEXT ----------
+    with tab1:
+        highlighted_doc1, highlighted_doc2 = highlight_similar_text(text1, text2)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("### 📄 Document 1")
-        st.markdown(highlighted_doc1, unsafe_allow_html=True)
+        col_h1, col_h2 = st.columns(2)
+        with col_h1:
+            st.markdown("### 📄 Document 1")
+            st.markdown(highlighted_doc1, unsafe_allow_html=True)
 
-    with col2:
-        st.markdown("### 📄 Document 2")
-        st.markdown(highlighted_doc2, unsafe_allow_html=True)
+        with col_h2:
+            st.markdown("### 📄 Document 2")
+            st.markdown(highlighted_doc2, unsafe_allow_html=True)
 
-    # Optional raw text view
-    st.divider()
-    with st.expander("📄 View Full Documents (Optional)"):
-        st.text_area("Document 1 Content", text1, height=180)
-        st.text_area("Document 2 Content", text2, height=180)
+    # ---------- TAB 2: FULL DOCUMENT ----------
+    with tab2:
+        if show_full_text:
+            st.text_area("Document 1 Text", text1, height=250)
+            st.text_area("Document 2 Text", text2, height=250)
+        else:
+            st.info("Enable **Show Full Documents** from sidebar to view content.")
+
+    # ---------- TAB 3: INFO ----------
+    with tab3:
+        st.markdown("""
+        **How similarity is calculated:**
+        - Text preprocessing (lowercasing, punctuation & stopword removal)
+        - TF-IDF vectorization
+        - Cosine similarity computation
+
+        **Highlighted text:**
+        - Sentence-level matching using sequence similarity
+        - Similar sentences are visually emphasized
+        """)
+
+else:
+    st.info("⬆️ Upload both documents to begin similarity analysis.")
