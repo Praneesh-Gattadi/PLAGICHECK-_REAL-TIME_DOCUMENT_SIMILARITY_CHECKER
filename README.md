@@ -22,13 +22,13 @@ PlagiCheck is a Streamlit-based web application that detects plagiarism and cont
 |-----------|----------------|
 | Upload documents and trigger deep scan | Side-by-side highlighted text comparison |
 
+<img width="1366" height="585" alt="Image" src="https://github.com/user-attachments/assets/8080fdf2-3337-4da5-b87a-39c12a35733c" />
+
 <img width="1278" height="493" alt="Image" src="https://github.com/user-attachments/assets/0e4e8ed3-b2b9-477f-b632-5b27ed67ef78" />
 
 <img width="1313" height="253" alt="Image" src="https://github.com/user-attachments/assets/185c9623-cdf2-4338-a024-d70f71dceb19" />
 
 <img width="1305" height="199" alt="Image" src="https://github.com/user-attachments/assets/41abd6df-5e53-4f6e-9dea-4107bbce4019" />
-
-<img width="1366" height="585" alt="Image" src="https://github.com/user-attachments/assets/8080fdf2-3337-4da5-b87a-39c12a35733c" />
 
 ---
 
