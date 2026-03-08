@@ -32,7 +32,7 @@ PlagiCheck is a Streamlit-based web application that detects plagiarism and cont
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/Praneesh-Gattadi/plagicheck.git
+git clone https://github.com/Praneesh-Gattadi/PLAGICHECK_REAL-TIME_DOCUMENT_SIMILARITY_CHECKER.git
 cd plagicheck
 ```
 
