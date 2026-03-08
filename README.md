@@ -28,7 +28,7 @@ PlagiCheck is a Streamlit-based web application that detects plagiarism and cont
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/your-username/plagicheck.git
+git clone https://github.com/Praneesh-Gattadi/plagicheck.git
 cd plagicheck
 ```
 
@@ -105,9 +105,3 @@ scikit-learn
 ## 📄 License
 
 This project is intended for academic and educational use.
-
----
-
-## 👤 Author
-
-Developed as a Mini Project — 4th Semester
